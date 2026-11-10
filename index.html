@@ -91,15 +91,21 @@
     .accuracy-caption { margin-top: 8px; color: #69758b; font-size: .75rem; }
     .accuracy-caption strong { color: #25324b; }
     .lower-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.15fr) minmax(245px, .85fr); gap: 16px; }
-    .fan-list, .achievement-list { display: grid; gap: 12px; }
-    .fan-row { display: grid; grid-template-columns: 25px 25px 1fr auto; align-items: center; gap: 8px; min-width: 0; font-size: .72rem; }
+    .fan-list, .achievement-list, .challenge-list, .rivalry-list { display: grid; gap: 12px; }
+    .fan-row, .rivalry-row, .challenge-row { display: grid; align-items: center; gap: 8px; min-width: 0; }
+    .fan-row { grid-template-columns: 25px 25px 1fr auto; font-size: .72rem; }
+    .rivalry-row { grid-template-columns: 1fr auto auto; padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .challenge-row { grid-template-columns: 1fr auto auto; padding: 10px 0; border-bottom: 1px solid var(--line); }
     .rank { color: #7a8598; font-weight: 800; }
     .team-symbol { display: grid; width: 24px; height: 24px; place-items: center; color: #fff; background: #203d8c; border-radius: 50%; font-size: .64rem; font-weight: 900; }
     .fan-row:nth-child(2) .team-symbol { background: #15865d; }
     .fan-row:nth-child(3) .team-symbol { background: #28334c; }
     .fan-row:nth-child(4) .team-symbol { background: #7b2f24; }
-    .fan-name { overflow: hidden; color: #39465f; text-overflow: ellipsis; white-space: nowrap; }
-    .fan-score { color: #526078; font-weight: 750; }
+    .fan-name, .rivalry-team, .challenge-name { overflow: hidden; color: #39465f; text-overflow: ellipsis; white-space: nowrap; }
+    .fan-score, .rivalry-score, .challenge-score { color: #526078; font-weight: 750; }
+    .challenge-badge, .rivalry-badge { display: inline-flex; align-items: center; justify-content: center; padding: 4px 8px; border-radius: 999px; font-size: .64rem; font-weight: 800; }
+    .challenge-badge { background: #eaf7ef; color: var(--green); }
+    .rivalry-badge { background: #fcefe9; color: var(--orange); }
     .achievement { display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 9px; font-size: .7rem; }
     .achievement-icon { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 50%; background: #eee8ff; color: var(--purple); }
     .achievement:nth-child(2) .achievement-icon { background: #fff1dc; color: #d98932; }
@@ -273,6 +279,29 @@
           </div>
         </article>
       </section>
+
+      <section class="dashboard-grid" style="margin-top:16px;">
+        <article class="panel" id="rivalry-panel">
+          <div class="panel-heading"><h2>Rivalries</h2><span>Head-to-head</span></div>
+          <div class="rivalry-list">
+            <div class="rivalry-row"><span class="rivalry-team">Jets vs. Patriots</span><span class="rivalry-badge">3–2</span><span class="rivalry-score">+240 FEI</span></div>
+            <div class="rivalry-row"><span class="rivalry-team">Jets vs. Bills</span><span class="rivalry-badge">2–3</span><span class="rivalry-score">-110 FEI</span></div>
+            <div class="rivalry-row"><span class="rivalry-team">Jets vs. Dolphins</span><span class="rivalry-badge">4–1</span><span class="rivalry-score">+390 FEI</span></div>
+            <div class="rivalry-row"><span class="rivalry-team">Jets vs. Eagles</span><span class="rivalry-badge">1–4</span><span class="rivalry-score">-260 FEI</span></div>
+          </div>
+        </article>
+
+        <article class="panel" id="challenge-panel">
+          <div class="panel-heading"><h2>Challenges</h2><span>Live events</span></div>
+          <div class="challenge-list">
+            <div class="challenge-row"><span class="challenge-name">Red Zone Accuracy</span><span class="challenge-badge">78%</span><span class="challenge-score">+250 pts</span></div>
+            <div class="challenge-row"><span class="challenge-name">Perfect 5-Play Streak</span><span class="challenge-badge">4/5</span><span class="challenge-score">+180 pts</span></div>
+            <div class="challenge-row"><span class="challenge-name">Noise Meter</span><span class="challenge-badge">104 dB</span><span class="challenge-score">+90 pts</span></div>
+            <div class="challenge-row"><span class="challenge-name">Rivalry Push</span><span class="challenge-badge">2 wins</span><span class="challenge-score">+140 pts</span></div>
+          </div>
+        </article>
+      </section>
+
       <p class="bottom-note">Fan Frenzy prototype · Dashboard figures and game details are illustrative sample data, not live feeds.</p>
     </main>
   </div>
