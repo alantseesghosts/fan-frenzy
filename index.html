@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#08251f" />
+  <title>Fan Frenzy — Bring the rivalry to the stands</title>
+  <meta
+    name="description"
+    content="Fan Frenzy turns game day into a friendly fan-vs-fan competition with play predictions, energy points, and rivalry stats."
+  />
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f6f5eb;
+      --muted: #aab9af;
+      --deep: #08251f;
+      --deepest: #061914;
+      --panel: #10362d;
+      --panel-light: #17473a;
+      --lime: #d3ff61;
+      --green: #39d38a;
+      --line: rgba(235, 248, 236, 0.14);
+      --orange: #ff9a57;
+      --radius: 22px;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 82% 7%, rgba(52, 126, 85, 0.22), transparent 28rem),
+        var(--deep);
+    }
+
+    button, a { font: inherit; }
+
+    a { color: inherit; text-decoration: none; }
+
+    button { color: inherit; }
+
+    .shell {
+      width: min(1160px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .announcement {
+      padding: 10px 20px;
+      text-align: center;
+      color: #d8e6d9;
+      background: #0e342a;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+    }
+
+    .announcement strong { color: var(--lime); }
+
+    header {
+      position: relative;
+      z-index: 2;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 850;
+      letter-spacing: -0.04em;
+      font-size: 1.15rem;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      color: var(--deepest);
+      background: var(--lime);
+      border-radius: 12px;
+      transform: rotate(-7deg);
+    }
+
+    .brand-mark svg { transform: rotate(7deg); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      color: #cad7cc;
+      font-size: 0.9rem;
+    }
+
+    .nav-links a:hover { color: var(--lime); }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 19px;
+      color: var(--deepest);
+      background: var(--lime);
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 160ms ease, filter 160ms ease, background 160ms ease;
+    }
+
+    .button:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    .button:focus-visible, a:focus-visible, select:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 3px;
+    }
+
+    .button.secondary {
+      color: var(--ink);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--line);
+    }
+
+    .button.small { padding: 10px 15px; font-size: 0.85rem; }
+
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.03fr 0.97fr;
+      align-items: center;
+      gap: 42px;
+      padding: 76px 0 86px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 19px;
+      color: var(--lime);
+      font-size: 0.75rem;
+      font-weight: 850;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 20px;
+      height: 2px;
+      background: currentColor;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 650px;
+      margin-bottom: 20px;
+      font-size: clamp(3rem, 6vw, 5.65rem);
+      line-height: 0.98;
+      letter-spacing: -0.075em;
+    }
+
+    h1 span { color: var(--lime); }
+
+    .hero-copy > p {
+      max-width: 520px;
+      margin-bottom: 28px;
+      color: #bdcbc0;
+      font-size: 1.08rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .trust-line {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-top: 27px;
+      color: #a6b8aa;
+      font-size: 0.82rem;
+    }
+
+    .trust-line .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 14px var(--green);
+    }
+
+    .experience-card {
+      position: relative;
+      padding: 23px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 90% 0, rgba(211,255,97,0.12), transparent 14rem),
+        linear-gradient(145deg, #164538, #0d3027 72%);
+      border: 1px solid rgba(220, 247, 215, 0.16);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .experience-card::after {
+      content: "FAN FRENZY";
+      position: absolute;
+      right: -14px;
+      bottom: 115px;
+      color: rgba(255,255,255,0.025);
+      font-size: 4.7rem;
+      font-weight: 950;
+      letter-spacing: -0.08em;
+      pointer-events: none;
+    }
+
+    .card-top, .matchup, .score-row, .card-foot {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 25px;
+      color: #c2d2c5;
+      font-size: 0.77rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .live-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      color: #ffd1c2;
+      background: rgba(255, 116, 87, 0.13);
+      border: 1px solid rgba(255, 116, 87, 0.28);
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .live-label i {
+      width: 7px;
+      height: 7px;
+      background: #ff795c;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #ff795c;
+    }
+
+    .matchup {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 14px;
+      padding: 22px 0 25px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .team { text-align: center; }
+
+    .team-badge {
+      display: grid;
+      width: 62px;
+      height: 62px;
+      margin: 0 auto 10px;
+      place-items: center;
+      color: var(--deepest);
+      background: var(--lime);
+      border: 5px solid rgba(255,255,255,0.12);
+      border-radius: 50%;
+      font-weight: 950;
+      font-size: 1rem;
+    }
+
+    .team.away .team-badge {
+      color: white;
+      background: #5865d9;
+    }
+
+    .team-name { font-weight: 850; }
+    .team-label { color: #a9beb0; font-size: 0.75rem; margin-top: 4px; }
+
+    .versus {
+      color: var(--lime);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+    }
+
+    .score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 19px 3px 16px;
+    }
+
+    .score-row span { color: #aebfb2; font-size: 0.82rem; }
+    .score-row strong { font-size: 1.35rem; letter-spacing: -0.04em; }
+
+    .energy-block { position: relative; z-index: 1; margin: 8px 0 19px; }
+
+    .energy-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 9px;
+      font-size: 0.82rem;
+    }
+
+    .energy-heading span:last-child { color: var(--lime); font-weight: 800; }
+
+    .energy-track {
+      height: 9px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+    }
+
+    .energy-fill {
+      height: 100%;
+      width: 74%;
+      background: linear-gradient(90deg, var(--green), var(--lime));
+      border-radius: inherit;
+      transition: width 350ms ease;
+    }
+
+    .away-energy .energy-fill {
+      width: 61%;
+      background: linear-gradient(90deg, #717eff, #abb3ff);
+    }
+
+    .card-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #b7c8bb;
+      font-size: 0.78rem;
+    }
+
+    .card-foot strong { color: white; }
+
+    .section { padding: 82px 0; }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 25px;
+      margin-bottom: 29px;
+    }
+
+    .section-head h2 {
+      max-width: 600px;
+      margin-bottom: 0;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: -0.065em;
+      line-height: 1.05;
+    }
+
+    .section-head p {
+      max-width: 360px;
+      margin-bottom: 3px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .prediction-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+    }
+
+    .prediction-card, .side-card, .feature-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .prediction-card { padding: 26px; }
+
+    .prediction-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      color: #adc1b2;
+      font-size: 0.82rem;
+    }
+
+    .quarter-pill {
+      padding: 7px 10px;
+      color: var(--lime);
+      background: rgba(211,255,97,0.1);
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    .prediction-card h3 {
+      max-width: 520px;
+      margin-bottom: 8px;
+      font-size: 1.6rem;
+      letter-spacing: -0.045em;
+    }
+
+    .prediction-card > p {
+      margin-bottom: 22px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .choice {
+      min-height: 100px;
+      padding: 17px;
+      text-align: left;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+    }
+
+    .choice:hover { transform: translateY(-2px); border-color: rgba(211,255,97,0.55); }
+    .choice[aria-pressed="true"] {
+      background: rgba(211,255,97,0.11);
+      border-color: var(--lime);
+    }
+
+    .choice strong { display: block; margin-bottom: 7px; }
+    .choice span { color: #afc0b3; font-size: 0.82rem; }
+
+    .prediction-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .prediction-bottom small { color: #a8bbad; }
+
+    .side-stack { display: grid; gap: 18px; }
+
+    .side-card { padding: 23px; }
+    .side-card h3 { margin-bottom: 7px; font-size: 1rem; }
+    .side-card p { color: var(--muted); font-size: 0.85rem; line-height: 1.55; }
+
+    .noise-number {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin: 7px 0 13px;
+    }
+
+    .noise-number strong {
+      color: var(--lime);
+      font-size: 2.8rem;
+      letter-spacing: -0.07em;
+    }
+
+    .noise-number span { color: #b1c2b5; font-size: 0.8rem; }
+
+    .wave {
+      height: 39px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow: hidden;
+    }
+
+    .wave i {
+      display: block;
+      width: 5px;
+      height: var(--h);
+      min-height: 8px;
+      background: linear-gradient(var(--lime), var(--green));
+      border-radius: 9px;
+      opacity: 0.8;
+    }
+
+    .rank-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      color: #cfdbd0;
+      font-size: 0.86rem;
+    }
+
+    .rank-line:last-child { border-bottom: 0; padding-bottom: 0; }
+    .rank-line strong { color: var(--lime); }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .feature-card { padding: 23px; }
+
+    .feature-icon {
+      display: grid;
+      width: 43px;
+      height: 43px;
+      margin-bottom: 18px;
+      place-items: center;
+      color: var(--lime);
+      background: rgba(211,255,97,0.1);
+      border-radius: 14px;
+    }
+
+    .feature-card h3 { margin-bottom: 9px; font-size: 1.05rem; }
+    .feature-card p { margin-bottom: 0; color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+    .cta {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin: 30px 0 82px;
+      padding: 37px;
+      overflow: hidden;
+      background: var(--lime);
+      border-radius: 26px;
+      color: var(--deepest);
+    }
+
+    .cta::after {
+      content: "!";
+      position: absolute;
+      right: 33%;
+      top: -72px;
+      color: rgba(8,37,31,0.08);
+      font-size: 16rem;
+      line-height: 1;
+      font-weight: 950;
+      pointer-events: none;
+    }
+
+    .cta h2 {
+      position: relative;
+      z-index: 1;
+      max-width: 520px;
+      margin-bottom: 7px;
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      letter-spacing: -0.06em;
+      line-height: 1.03;
+    }
+
+    .cta p { position: relative; z-index: 1; margin-bottom: 0; color: #365044; }
+
+    .cta .button {
+      position: relative;
+      z-index: 1;
+      flex: 0 0 auto;
+      color: white;
+      background: var(--deep);
+    }
+
+    footer {
+      padding: 25px 0 36px;
+      border-top: 1px solid var(--line);
+      color: #9eb1a2;
+      font-size: 0.8rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer-links { display: flex; gap: 20px; }
+
+    .toast {
+      position: fixed;
+      z-index: 10;
+      right: 22px;
+      bottom: 22px;
+      max-width: min(360px, calc(100vw - 44px));
+      padding: 14px 18px;
+      color: var(--deepest);
+      background: var(--lime);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      font-size: 0.9rem;
+      font-weight: 750;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 820px) {
+      .hero { grid-template-columns: 1fr; padding: 58px 0 65px; }
+      .hero-copy > p { max-width: 620px; }
+      .experience-card { max-width: 620px; width: 100%; }
+      .prediction-layout { grid-template-columns: 1fr; }
+      .side-stack { grid-template-columns: 1fr 1fr; }
+      .section-head { align-items: start; flex-direction: column; }
+    }
+
+    @media (max-width: 600px) {
+      .shell { width: min(100% - 28px, 1160px); }
+      .nav { min-height: 67px; }
+      .nav-links { display: none; }
+      .nav > .button { padding: 10px 13px; font-size: 0.8rem; }
+      .hero { gap: 34px; padding-top: 48px; }
+      h1 { font-size: clamp(3rem, 15vw, 4.4rem); }
+      .experience-card { padding: 17px; }
+      .team-badge { width: 54px; height: 54px; }
+      .section { padding: 62px 0; }
+      .section-head { gap: 14px; }
+      .prediction-card { padding: 20px; }
+      .choice-grid { grid-template-columns: 1fr; }
+      .choice { min-height: 78px; }
+      .prediction-bottom { align-items: stretch; flex-direction: column; }
+      .prediction-bottom .button { width: 100%; }
+      .side-stack, .features { grid-template-columns: 1fr; }
+      .cta { align-items: start; flex-direction: column; padding: 28px 23px; margin-bottom: 62px; }
+      .cta::after { right: 8%; }
+      .footer-inner { align-items: start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="announcement">
+    Built for the biggest matchups. <strong>Powered by fan energy.</strong>
+  </div>
+
+  <header>
+    <div class="shell nav">
+      <a class="brand" href="#" aria-label="Fan Frenzy home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
+            <path d="M13.2 2.5 5.6 13h5.3l-.2 8.5L18.6 11h-5.3l-.1-8.5Z"
+              fill="currentColor" stroke="currentColor" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        Fan Frenzy
+      </a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#how-it-works">How it works</a>
+        <a href="#game-center">Game center</a>
+        <a href="#about">About</a>
+      </nav>
+
+      <a class="button small" href="#game-center">Enter the rivalry <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow">Game day, turned up</div>
+        <h1 id="hero-title">Bring the <span>rivalry</span> to the stands.</h1>
+        <p>
+          Think you can read the game? Make your call, rally your side, and see
+          which fanbase brings the most energy when it matters.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="#game-center">Make your prediction <span aria-hidden="true">→</span></a>
+          <a class="button secondary" href="#how-it-works">See how it works</a>
+        </div>
+        <div class="trust-line">
+          <span class="dot" aria-hidden="true"></span>
+          Friendly competition. Points, not cash.
+        </div>
+      </div>
+
+      <aside class="experience-card" aria-label="Sample rivalry scoreboard">
+        <div class="card-top">
+          <span>Rivalry tracker · demo</span>
+          <span class="live-label"><i aria-hidden="true"></i> Sample</span>
+        </div>
+
+        <div class="matchup">
+          <div class="team">
+            <div class="team-badge" aria-hidden="true">NYJ</div>
+            <div class="team-name">Jets</div>
+            <div class="team-label">Home fans</div>
+          </div>
+          <div class="versus">VS</div>
+          <div class="team away">
+            <div class="team-badge" aria-hidden="true">NE</div>
+            <div class="team-name">Patriots</div>
+            <div class="team-label">Away fans</div>
+          </div>
+        </div>
+
+        <div class="score-row">
+          <span>Fan Frenzy points</span>
+          <strong><span id="home-score">2,480</span> — <span id="away-score">2,190</span></strong>
+        </div>
+
+        <div class="energy-block">
+          <div class="energy-heading"><span>Jets fan energy</span><span id="home-energy-label">74%</span></div>
+          <div class="energy-track" role="progressbar" aria-label="Jets fan energy" aria-valuenow="74" aria-valuemin="0" aria-valuemax="100">
+            <div class="energy-fill" id="home-energy"></div>
+          </div>
+        </div>
+
+        <div class="energy-block away-energy">
+          <div class="energy-heading"><span>Patriots fan energy</span><span>61%</span></div>
+          <div class="energy-track" role="progressbar" aria-label="Patriots fan energy" aria-valuenow="61" aria-valuemin="0" aria-valuemax="100">
+            <div class="energy-fill"></div>
+          </div>
+        </div>
+
+        <div class="card-foot">
+          <span>Stand noise</span>
+          <strong>104 dB <span aria-hidden="true">↗</span></strong>
+          <span>Fan leaderboard</span>
+          <strong>#1,284</strong>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section" id="game-center" aria-labelledby="game-center-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">The game center</div>
+            <h2 id="game-center-title">Your next call is on the field.</h2>
+          </div>
+          <p>Make a prediction, earn Frenzy points, and help your side climb the rivalry leaderboard.</p>
+        </div>
+
+        <div class="prediction-layout">
+          <div class="prediction-card">
+            <div class="prediction-meta">
+              <span>Jets possession · 3rd &amp; 4</span>
+              <span class="quarter-pill">Q3 · Demo play</span>
+            </div>
+            <h3>What happens on the next play?</h3>
+            <p>Choose your call before the snap. Correct predictions add points to your fan section.</p>
+
+            <div class="choice-grid" role="group" aria-label="Choose your play prediction">
+              <button class="choice" type="button" aria-pressed="false" data-choice="Pass play">
+                <strong>Pass play</strong>
+                <span>Take it through the air</span>
+              </button>
+              <button class="choice" type="button" aria-pressed="false" data-choice="Run play">
+                <strong>Run play</strong>
+                <span>Keep it on the ground</span>
+              </button>
+            </div>
+
+            <div class="prediction-bottom">
+              <small id="selection-status" aria-live="polite">Pick a play to lock in your call.</small>
+              <button class="button" id="submit-prediction" type="button">Lock in prediction <span aria-hidden="true">→</span></button>
+            </div>
+          </div>
+
+          <div class="side-stack">
+            <article class="side-card">
+              <h3>Stadium noise</h3>
+              <div class="noise-number"><strong>104</strong><span>dB · sample</span></div>
+              <div class="wave" aria-label="Decorative sound-wave visualization" role="img">
+                <i style="--h:16px"></i><i style="--h:28px"></i><i style="--h:21px"></i>
+                <i style="--h:35px"></i><i style="--h:19px"></i><i style="--h:30px"></i>
+                <i style="--h:12px"></i><i style="--h:37px"></i><i style="--h:24px"></i>
+                <i style="--h:33px"></i><i style="--h:17px"></i><i style="--h:28px"></i>
+                <i style="--h:37px"></i><i style="--h:20px"></i><i style="--h:31px"></i>
+                <i style="--h:14px"></i><i style="--h:26px"></i><i style="--h:36px"></i>
+                <i style="--h:18px"></i><i style="--h:30px"></i><i style="--h:22px"></i>
+                <i style="--h:35px"></i><i style="--h:15px"></i><i style="--h:27px"></i>
+              </div>
+              <p>Track the roar of both sides as the game unfolds.</p>
+            </article>
+
+            <article class="side-card">
+              <h3>Fan Frenzy leaderboard</h3>
+              <div class="rank-line"><span>1 · Green Zone Crew</span><strong>860 pts</strong></div>
+              <div class="rank-line"><span>2 · Section 124</span><strong>740 pts</strong></div>
+              <div class="rank-line"><span>3 · The Jet Set</span><strong>615 pts</strong></div>
+              <p style="margin: 13px 0 0;">Every prediction adds to your section’s total.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how-it-works" aria-labelledby="how-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Fan Experience Intelligence</div>
+            <h2 id="how-title">More than watching. You’re in the matchup.</h2>
+          </div>
+          <p>Fan Frenzy turns game-day moments into a shared, friendly competition from kickoff to the final whistle.</p>
+        </div>
+
+        <div class="features">
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">⚡</div>
+            <h3>Call the play</h3>
+            <p>Make quick predictions and build your Fan Frenzy score as the action develops.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">◉</div>
+            <h3>Feel the fan energy</h3>
+            <p>See how your section and the opposing fans are bringing the noise and enthusiasm.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">✦</div>
+            <h3>Fuel the rivalry</h3>
+            <p>Climb the leaderboard with your fellow fans in spirited, points-based competition.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell cta" id="about">
+      <div>
+        <h2>Make every game a fan-vs-fan game.</h2>
+        <p>Bring your instincts, bring your section, and bring the energy.</p>
+      </div>
+      <a class="button" href="#game-center">Join the frenzy <span aria-hidden="true">→</span></a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <a class="brand" href="#" aria-label="Fan Frenzy home">
+        <span class="brand-mark" aria-hidden="true">⚡</span>
+        Fan Frenzy
+      </a>
+      <span>Prototype experience · Scores and stats shown are sample data.</span>
+      <div class="footer-links">
+        <a href="#how-it-works">How it works</a>
+        <a href="#game-center">Game center</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const choices = [...document.querySelectorAll(".choice")];
+    const status = document.getElementById("selection-status");
+    const submitButton = document.getElementById("submit-prediction");
+    const toast = document.getElementById("toast");
+    const homeScore = document.getElementById("home-score");
+    const homeEnergy = document.getElementById("home-energy");
+    const homeEnergyLabel = document.getElementById("home-energy-label");
+    let selectedChoice = "";
+    let points = 2480;
+    let energy = 74;
+    let toastTimer;
+
+    choices.forEach((choice) => {
+      choice.addEventListener("click", () => {
+        selectedChoice = choice.dataset.choice;
+        choices.forEach((item) => item.setAttribute("aria-pressed", String(item === choice)));
+        status.textContent = `${selectedChoice} selected. Lock in your call.`;
+      });
+    });
+
+    submitButton.addEventListener("click", () => {
+      if (!selectedChoice) {
+        status.textContent = "Choose a play before locking in your prediction.";
+        choices[0].focus();
+        return;
+      }
+
+      points += 25;
+      energy = Math.min(100, energy + 2);
+      homeScore.textContent = points.toLocaleString();
+      homeEnergy.style.width = `${energy}%`;
+      homeEnergyLabel.textContent = `${energy}%`;
+      homeEnergy.parentElement.setAttribute("aria-valuenow", String(energy));
+      status.textContent = `${selectedChoice} locked in! You earned 25 demo points.`;
+      showToast(`Prediction locked: ${selectedChoice}. +25 demo Fan Frenzy points!`);
+      selectedChoice = "";
+      choices.forEach((item) => item.setAttribute("aria-pressed", "false"));
+    });
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("visible");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 3200);
+    }
+  </script>
+</body>
+</html>
